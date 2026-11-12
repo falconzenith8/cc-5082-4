@@ -1,0 +1,27 @@
+{
+  "name": "arena-draft",
+  "version": "1.0.0",
+  "description": "服务端权威的双队选角协议：轮流禁用、队内秘密候选、到期公开，并输出可直接载入比赛场景的正式阵容",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node --test test/*.test.js",
+    "test:ui": "node test/ui-e2e.mjs",
+    "sim": "node scripts/simulate.js",
+    "bots": "node scripts/bot-client.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/falconzenith8/cc-5082-4.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^8.22.2"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.0"
+  }
+}

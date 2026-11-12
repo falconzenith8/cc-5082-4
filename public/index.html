@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>竞技选角台</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">◇</span>
+        <div>
+          <h1 id="page-title">竞技选角协议</h1>
+          <p id="page-subtitle" class="muted">轮流禁用 · 队内秘密候选 · 到期公开</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span id="role-badge" class="badge">旁观席</span>
+        <span id="phase-badge" class="badge phase">—</span>
+        <span id="clock-badge" class="badge mono">--:--</span>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="panel status-panel">
+        <div id="phase-summary"></div>
+        <div id="presence-row" class="presence-row"></div>
+        <p id="notice" class="notice" hidden></p>
+      </section>
+
+      <section id="draft-area" class="draft-grid">
+        <aside class="panel pool-panel">
+          <h2>角色池 <span id="pool-count" class="muted mono"></span></h2>
+          <div class="filter-row" id="filter-row"></div>
+          <div id="pool-list" class="pool-list"></div>
+        </aside>
+
+        <section class="panel board-panel">
+          <div class="board-head">
+            <h2 id="board-title">禁选流程</h2>
+            <div id="turn-track" class="turn-track"></div>
+          </div>
+
+          <div class="team-columns">
+            <article id="team-A" class="team-card" data-team="A"></article>
+            <article id="team-B" class="team-card" data-team="B"></article>
+          </div>
+
+          <div id="reveal-panel" class="reveal-panel" hidden></div>
+        </section>
+      </section>
+
+      <section id="scene-area" class="panel scene-panel" hidden>
+        <div class="board-head">
+          <h2>比赛场景载入</h2>
+          <div class="scene-actions">
+            <a id="scene-download" class="ghost-btn" download="match-scene.json">下载 scene.json</a>
+            <button id="scene-send" class="primary-btn">送入比赛场景</button>
+          </div>
+        </div>
+        <div id="scene-canvas" class="scene-canvas"></div>
+        <details class="scene-json">
+          <summary>查看 scene 载荷</summary>
+          <pre id="scene-json"></pre>
+        </details>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
