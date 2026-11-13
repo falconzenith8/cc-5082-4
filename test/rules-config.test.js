@@ -90,15 +90,22 @@ test('位置角色的联合校验：同角色不同位置不可重复，严格�
 });
 
 test('跨阵营池约束：候选不足时裁决失败且不产生锁或场景', () => {
-  const thinPool = CHARACTER_POOL.filter((c) => !['ember_ram', 'tide_bastion', 'wild_root'].includes(c.id));
-  // 只剩 1 名先锋 -> 先锋位可满足，但两队各需先锋位，会争抢同一先锋。
+  // 池扩容后按生成数据动态裁剪：只保留 1 名先锋，两队无法各锁一名。
+  const vanguards = CHARACTER_POOL.filter((c) => c.role === 'vanguard');
+  const removed = vanguards.slice(1).map((c) => c.id);
+  const thinPool = CHARACTER_POOL.filter((c) => !removed.includes(c.id));
+  assert.equal(thinPool.filter((c) => c.role === 'vanguard').length, 1);
   const rules = normalizeRules({
     banTurnsPerTeam: 0, factionCap: 2, minFactions: 2, slotPlan: ['vanguard', 'support'],
     timers: { banMs: 100, secretMs: 1000, awayGraceMs: 100 },
   });
-  const { room, advance, now } = makeRoom({ rules, pool: thinPool });
-  advance(1200);
-  room.tick(now());
+  let t = 1000;
+  // 该房间显式传入空互斥表，隔离「候选耗尽」这一单一规则关系。
+  const room = new MatchRoom({
+    id: 'exhaust-cfg', rules, pool: thinPool, mutexes: [], clock: () => t,
+  });
+  t += 1200;
+  room.tick(t);
   assert.equal(room.state.phase, 'failed');
   assert.equal(room.state.failure.code, 'no-disjoint-lineup');
   assert.equal(room.state.scene, null);

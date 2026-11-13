@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240" role="img" aria-label="根守·布鲁">
+  <defs>
+    <linearGradient id="bg-wild_root" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#496818"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="240" fill="url(#bg-wild_root)"/>
+  <circle cx="37" cy="96" r="24" fill="#a3e635" opacity="0.164"/>
+  <circle cx="125" cy="59" r="10" fill="#a3e635" opacity="0.111"/>
+  <circle cx="169" cy="163" r="30" fill="#a3e635" opacity="0.147"/>
+  <circle cx="50" cy="106" r="11" fill="#a3e635" opacity="0.247"/>
+  <circle cx="97" cy="48" r="14" fill="#a3e635" opacity="0.258"/>
+  <rect x="6" y="102" width="55" height="55" rx="8" transform="rotate(35 6 102)" fill="#ccff42" opacity="0.10"/>
+  <rect x="127" y="132" width="53" height="53" rx="8" transform="rotate(51 127 132)" fill="#ccff42" opacity="0.10"/>
+  <rect x="112" y="140" width="38" height="38" rx="8" transform="rotate(59 112 140)" fill="#ccff42" opacity="0.10"/>
+  <circle cx="100" cy="92" r="46" fill="#0a101c" stroke="#a3e635" stroke-width="4"/>
+  <text x="100" y="110" text-anchor="middle" font-size="44" font-weight="700" fill="#a3e635" font-family="sans-serif">锋</text>
+  <text x="100" y="182" text-anchor="middle" font-size="26" font-weight="700" fill="#e8eef8" font-family="sans-serif">布鲁</text>
+  <text x="100" y="212" text-anchor="middle" font-size="14" fill="#ccff42" font-family="sans-serif">先锋 · 荒野</text>
+</svg>

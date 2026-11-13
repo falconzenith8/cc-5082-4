@@ -2,7 +2,7 @@
 // 离线端到端模拟：在进程内创建对局，由两套脚本策略完成禁选，输出裁决与场景。
 // 用法：node scripts/simulate.js [--rules <json>] [--json]
 import { MatchRoom } from '../server/engine.js';
-import { CHARACTER_POOL } from '../shared/characters.js';
+import { CHARACTER_POOL, MUTEXES } from '../shared/characters.js';
 
 const argv = process.argv.slice(2);
 const asJson = argv.includes('--json');
@@ -62,21 +62,26 @@ function botSecret(room, team, seat) {
     const candidates = CHARACTER_POOL
       .filter((c) => !banned.has(c.id) && accept.includes(c.role) && !usedIds.has(c.id))
       .sort((a, b) => weights[slotId](b) - weights[slotId](a));
-    const teamOffset = team === 'B' ? 1 : 0;
-    const chosen = candidates[Math.min(seat + teamOffset, candidates.length - 1)];
-    if (!chosen) continue;
-    const result = room.submitSecret({
-      team, seatIndex: seat,
-      intentId: `sim-${team}-${seat}-${slotId}-${Math.random().toString(36).slice(2, 6)}`,
-      roundId: room.state.roundId,
-      windowId: room.state.secret.windowId,
-      slotId,
-      characterId: chosen.id,
-      receivedAt: t,
-    });
-    if (result.ok) {
-      usedIds.add(chosen.id);
-      picks[slotId] = { characterId: chosen.id };
+    // 逐个尝试候选：被互斥/约束拒绝时换下一个，最终是否成局仍由服务端裁决。
+    let accepted = null;
+    for (const chosen of candidates) {
+      const result = room.submitSecret({
+        team, seatIndex: seat,
+        intentId: `sim-${team}-${seat}-${slotId}-${Math.random().toString(36).slice(2, 6)}`,
+        roundId: room.state.roundId,
+        windowId: room.state.secret.windowId,
+        slotId,
+        characterId: chosen.id,
+        receivedAt: t,
+      });
+      if (result.ok) {
+        accepted = chosen;
+        break;
+      }
+    }
+    if (accepted) {
+      usedIds.add(accepted.id);
+      picks[slotId] = { characterId: accepted.id };
     }
   }
   return picks;

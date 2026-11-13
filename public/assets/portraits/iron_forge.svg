@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240" role="img" aria-label="锻炉·瓦特">
+  <defs>
+    <linearGradient id="bg-iron_forge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#454c56"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="240" fill="url(#bg-iron_forge)"/>
+  <circle cx="107" cy="23" r="25" fill="#9aa8bf" opacity="0.086"/>
+  <circle cx="106" cy="213" r="19" fill="#9aa8bf" opacity="0.198"/>
+  <circle cx="103" cy="202" r="8" fill="#9aa8bf" opacity="0.243"/>
+  <circle cx="93" cy="112" r="19" fill="#9aa8bf" opacity="0.242"/>
+  <circle cx="183" cy="170" r="33" fill="#9aa8bf" opacity="0.135"/>
+  <rect x="36" y="199" width="37" height="37" rx="8" transform="rotate(10 36 199)" fill="#c1d2ef" opacity="0.10"/>
+  <rect x="118" y="127" width="51" height="51" rx="8" transform="rotate(18 118 127)" fill="#c1d2ef" opacity="0.10"/>
+  <rect x="76" y="132" width="37" height="37" rx="8" transform="rotate(15 76 132)" fill="#c1d2ef" opacity="0.10"/>
+  <circle cx="100" cy="92" r="46" fill="#0a101c" stroke="#9aa8bf" stroke-width="4"/>
+  <text x="100" y="110" text-anchor="middle" font-size="44" font-weight="700" fill="#9aa8bf" font-family="sans-serif">援</text>
+  <text x="100" y="182" text-anchor="middle" font-size="26" font-weight="700" fill="#e8eef8" font-family="sans-serif">瓦特</text>
+  <text x="100" y="212" text-anchor="middle" font-size="14" fill="#c1d2ef" font-family="sans-serif">支援 · 铁盟</text>
+</svg>

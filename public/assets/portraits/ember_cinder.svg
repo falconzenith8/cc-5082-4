@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240" role="img" aria-label="烬涡·格雷">
+  <defs>
+    <linearGradient id="bg-ember_cinder" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#71421b"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="240" fill="url(#bg-ember_cinder)"/>
+  <circle cx="97" cy="173" r="30" fill="#fb923c" opacity="0.171"/>
+  <circle cx="65" cy="62" r="29" fill="#fb923c" opacity="0.220"/>
+  <circle cx="179" cy="76" r="32" fill="#fb923c" opacity="0.157"/>
+  <circle cx="49" cy="134" r="24" fill="#fb923c" opacity="0.089"/>
+  <circle cx="183" cy="35" r="16" fill="#fb923c" opacity="0.218"/>
+  <rect x="4" y="141" width="55" height="55" rx="8" transform="rotate(30 4 141)" fill="#ffb74b" opacity="0.10"/>
+  <rect x="56" y="99" width="52" height="52" rx="8" transform="rotate(53 56 99)" fill="#ffb74b" opacity="0.10"/>
+  <rect x="78" y="14" width="56" height="56" rx="8" transform="rotate(55 78 14)" fill="#ffb74b" opacity="0.10"/>
+  <circle cx="100" cy="92" r="46" fill="#0a101c" stroke="#fb923c" stroke-width="4"/>
+  <text x="100" y="110" text-anchor="middle" font-size="44" font-weight="700" fill="#fb923c" font-family="sans-serif">控</text>
+  <text x="100" y="182" text-anchor="middle" font-size="26" font-weight="700" fill="#e8eef8" font-family="sans-serif">格雷</text>
+  <text x="100" y="212" text-anchor="middle" font-size="14" fill="#ffb74b" font-family="sans-serif">控制 · 焰庭</text>
+</svg>

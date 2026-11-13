@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240" role="img" aria-label="锋刃·艾吉">
+  <defs>
+    <linearGradient id="bg-iron_edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#454c56"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="240" fill="url(#bg-iron_edge)"/>
+  <circle cx="80" cy="207" r="31" fill="#9aa8bf" opacity="0.213"/>
+  <circle cx="116" cy="36" r="20" fill="#9aa8bf" opacity="0.258"/>
+  <circle cx="103" cy="187" r="27" fill="#9aa8bf" opacity="0.151"/>
+  <circle cx="28" cy="124" r="23" fill="#9aa8bf" opacity="0.249"/>
+  <circle cx="16" cy="141" r="29" fill="#9aa8bf" opacity="0.152"/>
+  <rect x="23" y="129" width="31" height="31" rx="8" transform="rotate(41 23 129)" fill="#c1d2ef" opacity="0.10"/>
+  <rect x="67" y="187" width="45" height="45" rx="8" transform="rotate(5 67 187)" fill="#c1d2ef" opacity="0.10"/>
+  <rect x="6" y="143" width="46" height="46" rx="8" transform="rotate(6 6 143)" fill="#c1d2ef" opacity="0.10"/>
+  <circle cx="100" cy="92" r="46" fill="#0a101c" stroke="#9aa8bf" stroke-width="4"/>
+  <text x="100" y="110" text-anchor="middle" font-size="44" font-weight="700" fill="#9aa8bf" font-family="sans-serif">斗</text>
+  <text x="100" y="182" text-anchor="middle" font-size="26" font-weight="700" fill="#e8eef8" font-family="sans-serif">艾吉</text>
+  <text x="100" y="212" text-anchor="middle" font-size="14" fill="#c1d2ef" font-family="sans-serif">决斗 · 铁盟</text>
+</svg>

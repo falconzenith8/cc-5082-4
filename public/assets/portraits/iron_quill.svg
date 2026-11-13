@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240" role="img" aria-label="墨律·奎尔">
+  <defs>
+    <linearGradient id="bg-iron_quill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#454c56"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="240" fill="url(#bg-iron_quill)"/>
+  <circle cx="38" cy="212" r="12" fill="#9aa8bf" opacity="0.242"/>
+  <circle cx="38" cy="154" r="24" fill="#9aa8bf" opacity="0.123"/>
+  <circle cx="154" cy="59" r="17" fill="#9aa8bf" opacity="0.238"/>
+  <circle cx="106" cy="217" r="13" fill="#9aa8bf" opacity="0.211"/>
+  <circle cx="173" cy="207" r="9" fill="#9aa8bf" opacity="0.130"/>
+  <rect x="2" y="49" width="32" height="32" rx="8" transform="rotate(40 2 49)" fill="#c1d2ef" opacity="0.10"/>
+  <rect x="75" y="163" width="47" height="47" rx="8" transform="rotate(8 75 163)" fill="#c1d2ef" opacity="0.10"/>
+  <rect x="-2" y="195" width="30" height="30" rx="8" transform="rotate(17 -2 195)" fill="#c1d2ef" opacity="0.10"/>
+  <circle cx="100" cy="92" r="46" fill="#0a101c" stroke="#9aa8bf" stroke-width="4"/>
+  <text x="100" y="110" text-anchor="middle" font-size="44" font-weight="700" fill="#9aa8bf" font-family="sans-serif">控</text>
+  <text x="100" y="182" text-anchor="middle" font-size="26" font-weight="700" fill="#e8eef8" font-family="sans-serif">奎尔</text>
+  <text x="100" y="212" text-anchor="middle" font-size="14" fill="#c1d2ef" font-family="sans-serif">控制 · 铁盟</text>
+</svg>

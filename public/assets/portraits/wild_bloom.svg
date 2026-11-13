@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240" role="img" aria-label="花语·梅芙">
+  <defs>
+    <linearGradient id="bg-wild_bloom" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#496818"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="240" fill="url(#bg-wild_bloom)"/>
+  <circle cx="182" cy="71" r="30" fill="#a3e635" opacity="0.219"/>
+  <circle cx="110" cy="35" r="8" fill="#a3e635" opacity="0.197"/>
+  <circle cx="183" cy="177" r="34" fill="#a3e635" opacity="0.203"/>
+  <circle cx="97" cy="48" r="34" fill="#a3e635" opacity="0.145"/>
+  <circle cx="138" cy="206" r="14" fill="#a3e635" opacity="0.091"/>
+  <rect x="19" y="142" width="54" height="54" rx="8" transform="rotate(27 19 142)" fill="#ccff42" opacity="0.10"/>
+  <rect x="-18" y="87" width="50" height="50" rx="8" transform="rotate(10 -18 87)" fill="#ccff42" opacity="0.10"/>
+  <rect x="36" y="52" width="29" height="29" rx="8" transform="rotate(20 36 52)" fill="#ccff42" opacity="0.10"/>
+  <circle cx="100" cy="92" r="46" fill="#0a101c" stroke="#a3e635" stroke-width="4"/>
+  <text x="100" y="110" text-anchor="middle" font-size="44" font-weight="700" fill="#a3e635" font-family="sans-serif">援</text>
+  <text x="100" y="182" text-anchor="middle" font-size="26" font-weight="700" fill="#e8eef8" font-family="sans-serif">梅芙</text>
+  <text x="100" y="212" text-anchor="middle" font-size="14" fill="#ccff42" font-family="sans-serif">支援 · 荒野</text>
+</svg>

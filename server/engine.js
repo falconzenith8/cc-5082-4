@@ -1,6 +1,7 @@
 import { EventEmitter } from 'node:events';
 import {
   CHARACTER_POOL,
+  MUTEXES,
   TEAM_META,
   FACTIONS,
   ROLES,
@@ -12,6 +13,7 @@ import {
   banTurns,
   normalizeRules,
   canComplete,
+  conflictsWith,
   countFactionsFromIds,
   defaultBanOrder,
   defaultCandidateOrder,
@@ -35,11 +37,12 @@ function emptyTeamSecret() {
 }
 
 export class MatchRoom extends EventEmitter {
-  constructor({ id, rules = {}, pool = CHARACTER_POOL, clock = Date.now, meta = {}, seats } = {}) {
+  constructor({ id, rules = {}, pool = CHARACTER_POOL, mutexes = MUTEXES, clock = Date.now, meta = {}, seats } = {}) {
     super();
     this.id = id;
     this.rules = normalizeRules(rules);
     this.pool = getPool(pool);
+    this.mutexes = mutexes || [];
     this.clock = clock;
     this.meta = meta;
     this.seats = seats || {
@@ -314,6 +317,16 @@ export class MatchRoom extends EventEmitter {
       return fail('role-mismatch', `${character.name} 是 ${character.role}，无法放入 ${SLOT_DEFINITIONS[slotId].label}`);
     }
 
+    // 互斥关系：与本队已在其他阵容位有效的角色互斥时直接拒绝（服务端裁决，前端仅做提示）。
+    const effectiveIds = this.teamEffectiveIds(team).filter((cid) => cid !== characterId);
+    const blocked = conflictsWith(effectiveIds, this.mutexes);
+    if (blocked.has(characterId)) {
+      const conflictId = [...blocked].find((cid) => this.mutexes.some((p) =>
+        (p.a === cid && p.b === characterId) || (p.b === cid && p.a === characterId)));
+      const conflictChar = conflictId ? this.pool.get(conflictId) : null;
+      return fail('mutex-conflict', `${character.name} 与已选角色${conflictChar ? ` ${conflictChar.name}` : ''}互斥，不能同队登场`);
+    }
+
     // 队内秘密冲突：同位置两席不同候选，后到的意图覆盖先到的（可改选），并记录审计日志。
     const theirSeat = seatIndex === 0 ? 1 : 0;
     const otherPick = this.state.secret.teams[team].seats[theirSeat]?.[slotId];
@@ -364,8 +377,9 @@ export class MatchRoom extends EventEmitter {
       banned: bannedSet,
       locked: null,
       rules: this.rules,
+      mutexes: this.mutexes,
     })) {
-      return fail('infeasible', '该选择会让剩余阵容位无法同时满足角色与阵营约束');
+      return fail('infeasible', '该选择会让剩余阵容位无法同时满足角色、阵营与互斥约束');
     }
 
     const previous = this.state.secret.teams[team].seats[seatIndex][slotId] || null;
@@ -447,6 +461,14 @@ export class MatchRoom extends EventEmitter {
 
   enumerateLineups(bannedSet) {
     const { slotPlan, factionCap, minFactions } = this.rules;
+    const mutexOf = (id) => {
+      const out = new Set();
+      for (const pair of this.mutexes) {
+        if (pair.a === id) out.add(pair.b);
+        if (pair.b === id) out.add(pair.a);
+      }
+      return out;
+    };
     const options = slotPlan.map((slotId) => {
       const list = [...this.pool.values()]
         .filter((c) => !bannedSet.has(c.id) && slotAccepts(slotId, c.role))
@@ -463,6 +485,7 @@ export class MatchRoom extends EventEmitter {
       const { slotId, list } = options[index];
       for (const character of list) {
         if (used.has(character.id)) continue;
+        if (chosen.some((entry) => mutexOf(entry.characterId).has(character.id))) continue;
         const next = (factionCounts[character.faction] || 0) + 1;
         if (next > factionCap) continue;
         chosen.push({ slotId, characterId: character.id });
@@ -537,7 +560,9 @@ export class MatchRoom extends EventEmitter {
         locks.set(entry.characterId, { team, slotId: entry.slotId });
       }
     }
-    const validation = validateFinalRosters({ pool: this.pool, banned: bannedSet, locked: locks, rules: this.rules });
+    const validation = validateFinalRosters({
+      pool: this.pool, banned: bannedSet, locked: locks, rules: this.rules, mutexes: this.mutexes,
+    });
     if (!validation.ok) {
       return this.failAdjudication(now, reason, 'validation-failed', { ...diagnostics, validation });
     }
@@ -755,6 +780,7 @@ export class MatchRoom extends EventEmitter {
       },
       ban: this.banView(),
       presence: this.presenceView(),
+      mutexes: this.mutexes.map((pair) => ({ a: pair.a, b: pair.b })),
       meta: this.meta,
     };
     if (this.state.phase === 'secret') {

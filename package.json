@@ -6,6 +6,10 @@
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
+    "build": "node scripts/build-resources.js",
+    "verify": "node scripts/verify-resources.js",
+    "scenario": "node scripts/run-scenario.js",
+    "cold-start": "node scripts/cold-start.js",
     "test": "node --test test/*.test.js",
     "test:ui": "node test/ui-e2e.mjs",
     "sim": "node scripts/simulate.js",

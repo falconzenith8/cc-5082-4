@@ -5,7 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
 import { MatchRoom, TEAMS } from './engine.js';
-import { CHARACTER_POOL } from '../shared/characters.js';
+import { CHARACTER_POOL, MUTEXES, generateRoster } from '../shared/characters.js';
 
 const ROOT = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const PUBLIC_DIR = join(ROOT, 'public');
@@ -20,11 +20,19 @@ const MIME = {
   '.png': 'image/png',
 };
 
-export function createApp({ log = console.log } = {}) {
+export function createApp({ log = console.log, roster = null } = {}) {
   const matches = new Map();
   const connections = new Map(); // matchId -> Set(ws)
+  // 默认角色池来自固定种子；指定其他种子时按种子重建（含互斥关系）。
+  const rosterCache = new Map();
+  const defaultRoster = roster || { characters: CHARACTER_POOL, mutexes: MUTEXES, seed: 'default' };
+  function rosterFor(seed) {
+    if (!seed) return defaultRoster;
+    if (!rosterCache.has(seed)) rosterCache.set(seed, generateRoster(seed));
+    return rosterCache.get(seed);
+  }
 
-  function createMatch({ rules = {}, meta = {}, chars = CHARACTER_POOL } = {}) {
+  function createMatch({ rules = {}, meta = {}, chars, mutexes, rosterSeed } = {}) {
     const id = `m-${randomUUID().slice(0, 8)}`;
     const seats = {};
     for (const team of TEAMS) {
@@ -34,7 +42,13 @@ export function createApp({ log = console.log } = {}) {
         token: randomUUID(),
       }));
     }
-    const room = new MatchRoom({ id, rules, meta, seats, pool: chars });
+    const built = chars ? { characters: chars, mutexes: mutexes || [], seed: 'custom' } : rosterFor(rosterSeed);
+    const room = new MatchRoom({
+      id, rules, meta, seats,
+      pool: built.characters,
+      mutexes: built.mutexes,
+    });
+    room.rosterSeed = built.seed;
     matches.set(id, room);
     room.on('update', () => broadcast(id));
     return room;
@@ -224,7 +238,11 @@ export function createApp({ log = console.log } = {}) {
       }
       if (pathname === '/api/matches' && req.method === 'POST') {
         const body = await readBody(req);
-        const room = createMatch({ rules: body.rules || {}, meta: body.meta || {} });
+        const room = createMatch({
+          rules: body.rules || {},
+          meta: body.meta || {},
+          rosterSeed: body.rosterSeed || null,
+        });
         return json(res, 201, {
           matchId: room.id,
           joinLinks: joinLinks(room),

@@ -1,0 +1,176 @@
+{
+  "schema": "arena-assets@1",
+  "rosterSeed": "arena-draft-2026",
+  "generatedAt": "deterministic",
+  "count": 24,
+  "files": [
+    {
+      "characterId": "iron_bulwark",
+      "path": "/assets/portraits/iron_bulwark.svg",
+      "rel": "assets/portraits/iron_bulwark.svg",
+      "bytes": 1558,
+      "sha256": "5262866dfe7a511b"
+    },
+    {
+      "characterId": "iron_edge",
+      "path": "/assets/portraits/iron_edge.svg",
+      "rel": "assets/portraits/iron_edge.svg",
+      "bytes": 1542,
+      "sha256": "b86aecee7f8e10f1"
+    },
+    {
+      "characterId": "iron_forge",
+      "path": "/assets/portraits/iron_forge.svg",
+      "rel": "assets/portraits/iron_forge.svg",
+      "bytes": 1551,
+      "sha256": "cb43edf473e44a13"
+    },
+    {
+      "characterId": "iron_warden",
+      "path": "/assets/portraits/iron_warden.svg",
+      "rel": "assets/portraits/iron_warden.svg",
+      "bytes": 1545,
+      "sha256": "39e725c0b604efb8"
+    },
+    {
+      "characterId": "tide_bastion",
+      "path": "/assets/portraits/tide_bastion.svg",
+      "rel": "assets/portraits/tide_bastion.svg",
+      "bytes": 1550,
+      "sha256": "5374c6c28a9752b8"
+    },
+    {
+      "characterId": "tide_fang",
+      "path": "/assets/portraits/tide_fang.svg",
+      "rel": "assets/portraits/tide_fang.svg",
+      "bytes": 1538,
+      "sha256": "99bbb7297858081c"
+    },
+    {
+      "characterId": "tide_choir",
+      "path": "/assets/portraits/tide_choir.svg",
+      "rel": "assets/portraits/tide_choir.svg",
+      "bytes": 1545,
+      "sha256": "0572052df80e1026"
+    },
+    {
+      "characterId": "tide_mist",
+      "path": "/assets/portraits/tide_mist.svg",
+      "rel": "assets/portraits/tide_mist.svg",
+      "bytes": 1546,
+      "sha256": "d2afe7f00dd4e795"
+    },
+    {
+      "characterId": "ember_ram",
+      "path": "/assets/portraits/ember_ram.svg",
+      "rel": "assets/portraits/ember_ram.svg",
+      "bytes": 1547,
+      "sha256": "a752e681652c30f2"
+    },
+    {
+      "characterId": "ember_step",
+      "path": "/assets/portraits/ember_step.svg",
+      "rel": "assets/portraits/ember_step.svg",
+      "bytes": 1547,
+      "sha256": "8713468cffd74a1b"
+    },
+    {
+      "characterId": "ember_hearth",
+      "path": "/assets/portraits/ember_hearth.svg",
+      "rel": "assets/portraits/ember_hearth.svg",
+      "bytes": 1545,
+      "sha256": "32d2b82390a7ae1f"
+    },
+    {
+      "characterId": "ember_cinder",
+      "path": "/assets/portraits/ember_cinder.svg",
+      "rel": "assets/portraits/ember_cinder.svg",
+      "bytes": 1544,
+      "sha256": "e01cacb1e5e10b3f"
+    },
+    {
+      "characterId": "wild_root",
+      "path": "/assets/portraits/wild_root.svg",
+      "rel": "assets/portraits/wild_root.svg",
+      "bytes": 1546,
+      "sha256": "3f5ae03430f474e3"
+    },
+    {
+      "characterId": "wild_shade",
+      "path": "/assets/portraits/wild_shade.svg",
+      "rel": "assets/portraits/wild_shade.svg",
+      "bytes": 1544,
+      "sha256": "6d8e520d062a4fae"
+    },
+    {
+      "characterId": "wild_bloom",
+      "path": "/assets/portraits/wild_bloom.svg",
+      "rel": "assets/portraits/wild_bloom.svg",
+      "bytes": 1545,
+      "sha256": "5ead03a51a3bf9fb"
+    },
+    {
+      "characterId": "wild_gale",
+      "path": "/assets/portraits/wild_gale.svg",
+      "rel": "assets/portraits/wild_gale.svg",
+      "bytes": 1540,
+      "sha256": "8ea2e63507ca5599"
+    },
+    {
+      "characterId": "iron_aegis",
+      "path": "/assets/portraits/iron_aegis.svg",
+      "rel": "assets/portraits/iron_aegis.svg",
+      "bytes": 1548,
+      "sha256": "4c84aee9696655ce"
+    },
+    {
+      "characterId": "iron_quill",
+      "path": "/assets/portraits/iron_quill.svg",
+      "rel": "assets/portraits/iron_quill.svg",
+      "bytes": 1543,
+      "sha256": "8e32940222646089"
+    },
+    {
+      "characterId": "tide_kelp",
+      "path": "/assets/portraits/tide_kelp.svg",
+      "rel": "assets/portraits/tide_kelp.svg",
+      "bytes": 1542,
+      "sha256": "9448f85fc3a92180"
+    },
+    {
+      "characterId": "tide_anchor",
+      "path": "/assets/portraits/tide_anchor.svg",
+      "rel": "assets/portraits/tide_anchor.svg",
+      "bytes": 1548,
+      "sha256": "0ae9bcf299be8f46"
+    },
+    {
+      "characterId": "ember_flare",
+      "path": "/assets/portraits/ember_flare.svg",
+      "rel": "assets/portraits/ember_flare.svg",
+      "bytes": 1542,
+      "sha256": "e4013c6c6a3effd5"
+    },
+    {
+      "characterId": "ember_coil",
+      "path": "/assets/portraits/ember_coil.svg",
+      "rel": "assets/portraits/ember_coil.svg",
+      "bytes": 1552,
+      "sha256": "b16bc2174be9390f"
+    },
+    {
+      "characterId": "wild_moss",
+      "path": "/assets/portraits/wild_moss.svg",
+      "rel": "assets/portraits/wild_moss.svg",
+      "bytes": 1541,
+      "sha256": "c7ffaf5686f68059"
+    },
+    {
+      "characterId": "wild_petal",
+      "path": "/assets/portraits/wild_petal.svg",
+      "rel": "assets/portraits/wild_petal.svg",
+      "bytes": 1547,
+      "sha256": "63633a032af3d956"
+    }
+  ]
+}

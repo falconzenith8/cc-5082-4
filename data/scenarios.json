@@ -1,0 +1,649 @@
+{
+  "schema": "arena-scenario@1",
+  "seed": "arena-draft-2026",
+  "rosterSeed": "arena-draft-2026",
+  "scenarios": [
+    {
+      "id": "rotation",
+      "title": "正常轮换：完整禁用 → 秘密候选 → 到期公开",
+      "instructions": [
+        "服务端创建对局后，A/B 两队脚本座位按 turnId 顺序完成 4 次轮换禁用。",
+        "进入秘密窗口后两队提交三个阵容位，A 队对自由位改选一次，B 队重放一条相同 intentId。",
+        "推进到秘密窗口截止，由服务端一次性裁决并公开正式阵容。",
+        "旁观页与座位页并排打开，观察秘密候选在裁决前只对本队可见。"
+      ],
+      "expectRules": [
+        "ban-turn-rotation",
+        "stale-turn-guard",
+        "secret-isolation-before-reveal",
+        "intent-idempotency",
+        "secret-revision",
+        "deadline-adjudication",
+        "cross-team-unique-lock"
+      ],
+      "rules": {
+        "banTurnsPerTeam": 2,
+        "factionCap": 2,
+        "minFactions": 2,
+        "slotPlan": [
+          "vanguard",
+          "support",
+          "flex"
+        ],
+        "timers": {
+          "banMs": 60000,
+          "secretMs": 60000,
+          "awayGraceMs": 8000
+        }
+      },
+      "script": {
+        "A": [
+          {
+            "at": 100,
+            "type": "ban",
+            "team": "A",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": "tide_mist",
+            "turnId": "r1-ban0",
+            "windowId": null,
+            "connected": null,
+            "useToken": null,
+            "note": "第 1 次轮换禁用"
+          },
+          {
+            "at": 600,
+            "type": "ban",
+            "team": "A",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": "iron_quill",
+            "turnId": "r1-ban2",
+            "windowId": null,
+            "connected": null,
+            "useToken": null,
+            "note": "第 3 次轮换禁用"
+          },
+          {
+            "at": 1100,
+            "type": "secret",
+            "team": "A",
+            "seat": 0,
+            "slotId": "vanguard",
+            "role": null,
+            "characterId": "iron_bulwark",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "A 队初次提交"
+          },
+          {
+            "at": 1300,
+            "type": "secret",
+            "team": "A",
+            "seat": 0,
+            "slotId": "support",
+            "role": null,
+            "characterId": "wild_petal",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "A 队初次提交"
+          },
+          {
+            "at": 1500,
+            "type": "secret",
+            "team": "A",
+            "seat": 0,
+            "slotId": "flex",
+            "role": null,
+            "characterId": "ember_step",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "A 队初次提交"
+          },
+          {
+            "at": 1700,
+            "type": "secret",
+            "team": "A",
+            "seat": 0,
+            "slotId": "flex",
+            "role": null,
+            "characterId": "iron_warden",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "A 队截止前改选自由位"
+          }
+        ],
+        "B": [
+          {
+            "at": 350,
+            "type": "ban",
+            "team": "B",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": "ember_coil",
+            "turnId": "r1-ban1",
+            "windowId": null,
+            "connected": null,
+            "useToken": null,
+            "note": "第 2 次轮换禁用"
+          },
+          {
+            "at": 850,
+            "type": "ban",
+            "team": "B",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": "wild_shade",
+            "turnId": "r1-ban3",
+            "windowId": null,
+            "connected": null,
+            "useToken": null,
+            "note": "第 4 次轮换禁用"
+          },
+          {
+            "at": 1900,
+            "type": "secret",
+            "team": "B",
+            "seat": 0,
+            "slotId": "vanguard",
+            "role": null,
+            "characterId": "iron_aegis",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "B 队提交"
+          },
+          {
+            "at": 2100,
+            "type": "secret",
+            "team": "B",
+            "seat": 0,
+            "slotId": "support",
+            "role": null,
+            "characterId": "tide_choir",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "B 队提交"
+          },
+          {
+            "at": 2300,
+            "type": "secret",
+            "team": "B",
+            "seat": 0,
+            "slotId": "flex",
+            "role": null,
+            "characterId": "iron_edge",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "B 队提交"
+          },
+          {
+            "at": 2600,
+            "type": "secret",
+            "team": "B",
+            "seat": 0,
+            "slotId": "flex",
+            "role": null,
+            "characterId": "iron_edge",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "相同意图重放，预期 duplicate-intent",
+            "replay": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "exhaustion",
+      "title": "候选耗尽：先锋位被禁到无法组成两队不重叠阵容",
+      "instructions": [
+        "按脚本顺序禁用先锋，直到全池只剩一名先锋角色。",
+        "秘密窗口两队都申请该先锋，并各自提交支援位。",
+        "推进截止时间，观察服务端裁决：不得生成任何阵容锁或比赛场景。"
+      ],
+      "expectRules": [
+        "no-disjoint-lineup",
+        "failed-produces-no-locks",
+        "scene-409-before-reveal"
+      ],
+      "rules": {
+        "banTurnsPerTeam": 3,
+        "factionCap": 3,
+        "minFactions": 1,
+        "slotPlan": [
+          "vanguard",
+          "support"
+        ],
+        "timers": {
+          "banMs": 60000,
+          "secretMs": 60000,
+          "awayGraceMs": 8000
+        }
+      },
+      "script": {
+        "A": [
+          {
+            "at": 100,
+            "type": "ban",
+            "team": "A",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": "iron_bulwark",
+            "turnId": "r1-ban0",
+            "windowId": null,
+            "connected": null,
+            "useToken": null,
+            "note": "禁掉一名先锋，压缩先锋位候选"
+          },
+          {
+            "at": 500,
+            "type": "ban",
+            "team": "A",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": "ember_ram",
+            "turnId": "r1-ban2",
+            "windowId": null,
+            "connected": null,
+            "useToken": null,
+            "note": "禁掉一名先锋，压缩先锋位候选"
+          },
+          {
+            "at": 900,
+            "type": "ban",
+            "team": "A",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": "iron_aegis",
+            "turnId": "r1-ban4",
+            "windowId": null,
+            "connected": null,
+            "useToken": null,
+            "note": "禁掉一名先锋，压缩先锋位候选"
+          },
+          {
+            "at": 1100,
+            "type": "secret",
+            "team": "A",
+            "seat": 0,
+            "slotId": "vanguard",
+            "role": null,
+            "characterId": "tide_anchor",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "A 申请唯一先锋"
+          },
+          {
+            "at": 1400,
+            "type": "secret",
+            "team": "A",
+            "seat": 0,
+            "slotId": "support",
+            "role": null,
+            "characterId": "iron_forge",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": ""
+          }
+        ],
+        "B": [
+          {
+            "at": 300,
+            "type": "ban",
+            "team": "B",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": "tide_bastion",
+            "turnId": "r1-ban1",
+            "windowId": null,
+            "connected": null,
+            "useToken": null,
+            "note": "禁掉一名先锋，压缩先锋位候选"
+          },
+          {
+            "at": 700,
+            "type": "ban",
+            "team": "B",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": "wild_root",
+            "turnId": "r1-ban3",
+            "windowId": null,
+            "connected": null,
+            "useToken": null,
+            "note": "禁掉一名先锋，压缩先锋位候选"
+          },
+          {
+            "at": 1250,
+            "type": "secret",
+            "team": "B",
+            "seat": 0,
+            "slotId": "vanguard",
+            "role": null,
+            "characterId": "tide_anchor",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "B 申请同一先锋"
+          },
+          {
+            "at": 1550,
+            "type": "secret",
+            "team": "B",
+            "seat": 0,
+            "slotId": "support",
+            "role": null,
+            "characterId": "tide_choir",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": ""
+          }
+        ]
+      }
+    },
+    {
+      "id": "disconnect",
+      "title": "队员掉线：暂离拒绝意图、宽限计时与回归恢复",
+      "instructions": [
+        "A 队完成首次禁用后两席先后掉线，观察 presence 与全队暂离时间。",
+        "B 队在对方暂离期间继续操作；A 队回归后再次掉线并尝试提交秘密候选。",
+        "离线座位的意图必须被服务端拒绝（seat-away）；回归后未提交位置在截止时默认补位。",
+        "可手动断开全部四个座位，验证双方离线超过宽限会提前触发默认裁决。"
+      ],
+      "expectRules": [
+        "presence-away-tracking",
+        "seat-away-reject",
+        "away-grace-deadline",
+        "both-teams-away-adjudication",
+        "default-fill-on-missing"
+      ],
+      "rules": {
+        "banTurnsPerTeam": 1,
+        "factionCap": 2,
+        "minFactions": 2,
+        "slotPlan": [
+          "vanguard",
+          "support",
+          "flex"
+        ],
+        "timers": {
+          "banMs": 60000,
+          "secretMs": 60000,
+          "awayGraceMs": 8000
+        }
+      },
+      "script": {
+        "A": [
+          {
+            "at": 100,
+            "type": "ban",
+            "team": "A",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": "ember_step",
+            "turnId": "r1-ban0",
+            "windowId": null,
+            "connected": null,
+            "useToken": null,
+            "note": "A 第一次禁用"
+          },
+          {
+            "at": 300,
+            "type": "presence",
+            "team": "A",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": null,
+            "turnId": null,
+            "windowId": null,
+            "connected": false,
+            "useToken": null,
+            "note": "A 指挥席掉线"
+          },
+          {
+            "at": 350,
+            "type": "presence",
+            "team": "A",
+            "seat": 1,
+            "slotId": null,
+            "role": null,
+            "characterId": null,
+            "turnId": null,
+            "windowId": null,
+            "connected": false,
+            "useToken": null,
+            "note": "A 副手席掉线（全队暂离）"
+          },
+          {
+            "at": 800,
+            "type": "presence",
+            "team": "A",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": null,
+            "turnId": null,
+            "windowId": null,
+            "connected": true,
+            "useToken": null,
+            "note": "A 指挥席回归"
+          },
+          {
+            "at": 1150,
+            "type": "presence",
+            "team": "A",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": null,
+            "turnId": null,
+            "windowId": null,
+            "connected": false,
+            "useToken": null,
+            "note": "A 再次掉线"
+          },
+          {
+            "at": 1250,
+            "type": "secret",
+            "team": "A",
+            "seat": 0,
+            "slotId": "vanguard",
+            "role": null,
+            "characterId": "iron_bulwark",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "离线座位提交，预期 seat-away 拒绝"
+          },
+          {
+            "at": 1350,
+            "type": "presence",
+            "team": "A",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": null,
+            "turnId": null,
+            "windowId": null,
+            "connected": true,
+            "useToken": null,
+            "note": "A 回归，剩余位置由默认策略补位"
+          }
+        ],
+        "B": [
+          {
+            "at": 600,
+            "type": "ban",
+            "team": "B",
+            "seat": 0,
+            "slotId": null,
+            "role": null,
+            "characterId": "wild_gale",
+            "turnId": "r1-ban1",
+            "windowId": null,
+            "connected": null,
+            "useToken": null,
+            "note": "B 在 A 暂离期间禁用"
+          },
+          {
+            "at": 1000,
+            "type": "secret",
+            "team": "B",
+            "seat": 0,
+            "slotId": "support",
+            "role": null,
+            "characterId": "iron_forge",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "B 提交支援"
+          }
+        ]
+      }
+    },
+    {
+      "id": "unauthorized-peek",
+      "title": "越权反例：偷看他队秘密候选必须失败，公共输出无隐藏字段",
+      "instructions": [
+        "A 队先提交两个秘密候选，确保存在「隐藏信息」可供反例尝试窃取。",
+        "依次以旁观者身份、B 队座位令牌、伪造令牌请求 A 队的座位视图/秘密字段。",
+        "所有越权请求必须被服务端拒绝或降级为公共视图；断言任何返回体都不含 A 队候选角色 id。",
+        "裁决后再检查：秘密只在 reveal 之后随正式阵容公开，公开时间点之前公开通道零泄漏。"
+      ],
+      "expectRules": [
+        "spectator-no-secret-field",
+        "opponent-only-submit-count",
+        "forged-token-rejected",
+        "public-payload-no-hidden-id",
+        "reveal-timing"
+      ],
+      "rules": {
+        "banTurnsPerTeam": 0,
+        "factionCap": 2,
+        "minFactions": 2,
+        "slotPlan": [
+          "vanguard",
+          "support",
+          "flex"
+        ],
+        "timers": {
+          "banMs": 60000,
+          "secretMs": 60000,
+          "awayGraceMs": 8000
+        }
+      },
+      "script": {
+        "A": [
+          {
+            "at": 100,
+            "type": "secret",
+            "team": "A",
+            "seat": 0,
+            "slotId": "vanguard",
+            "role": null,
+            "characterId": "iron_bulwark",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "A 提交秘密先锋"
+          },
+          {
+            "at": 250,
+            "type": "secret",
+            "team": "A",
+            "seat": 0,
+            "slotId": "support",
+            "role": null,
+            "characterId": "iron_forge",
+            "turnId": null,
+            "windowId": "r1-secret",
+            "connected": null,
+            "useToken": null,
+            "note": "A 提交秘密支援"
+          }
+        ],
+        "B": []
+      },
+      "attacks": [
+        {
+          "at": 400,
+          "type": "peek-secret",
+          "team": "A",
+          "seat": 0,
+          "slotId": null,
+          "role": null,
+          "characterId": null,
+          "turnId": null,
+          "windowId": null,
+          "connected": null,
+          "useToken": "spectator",
+          "note": "旁观者无令牌请求座位视图"
+        },
+        {
+          "at": 500,
+          "type": "peek-secret",
+          "team": "A",
+          "seat": 0,
+          "slotId": null,
+          "role": null,
+          "characterId": null,
+          "turnId": null,
+          "windowId": null,
+          "connected": null,
+          "useToken": "B0",
+          "note": "B 队令牌尝试读取 A 队秘密"
+        },
+        {
+          "at": 600,
+          "type": "peek-secret",
+          "team": "A",
+          "seat": 0,
+          "slotId": null,
+          "role": null,
+          "characterId": null,
+          "turnId": null,
+          "windowId": null,
+          "connected": null,
+          "useToken": "forged-token",
+          "note": "伪造令牌尝试越权"
+        }
+      ]
+    }
+  ]
+}

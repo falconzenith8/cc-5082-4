@@ -64,21 +64,34 @@ function waitForView(ws, predicate, timeoutMs = 60000) {
 }
 
 function bestCharacter(view, slotId, seat, team) {
+  return rankedCandidates(view, slotId, seat, team)[0];
+}
+
+function rankedCandidates(view, slotId, seat, team) {
   const banned = new Set(view.ban.bans.map((b) => b.characterId));
   const used = new Set(Object.values(view.secret.own.picks).filter(Boolean).map((p) => p.characterId));
-  const accept = { vanguard: ['vanguard'], support: ['support'], flex: ['duelist', 'control'] }[slotId];
+  const accept = {
+    vanguard: ['vanguard'],
+    support: ['support'],
+    flex: ['duelist', 'control'],
+    flex2: ['duelist', 'control'],
+  }[slotId];
   const weights = {
     vanguard: (c) => c.guard * 0.55 + c.utility * 0.25 + c.power * 0.12 + c.speed * 0.08,
     support: (c) => c.utility * 0.58 + c.guard * 0.18 + c.speed * 0.14 + c.power * 0.1,
     flex: (c) => c.power * 0.5 + c.utility * 0.2 + c.speed * 0.18 + c.guard * 0.12,
+    flex2: (c) => c.power * 0.5 + c.utility * 0.2 + c.speed * 0.18 + c.guard * 0.12,
   };
   const list = view.pool
     .filter((c) => !banned.has(c.id) && accept.includes(c.role) && !used.has(c.id))
     .sort((a, b) => weights[slotId](b) - weights[slotId](a));
   // 两个座位与两队的偏好略作差异化，便于观察到队内冲突与跨队争抢的裁决
   const teamOffset = team === 'B' ? 1 : 0;
-  const pick = list[Math.min(seat + teamOffset, list.length - 1)];
-  return pick;
+  if (list.length > 1) {
+    const pivot = Math.min(seat + teamOffset, list.length - 1);
+    [list[0], list[pivot]] = [list[pivot], list[0]];
+  }
+  return list;
 }
 
 function roleKey(role) {
@@ -130,21 +143,24 @@ async function runSeat({ token, team, seat, onView }) {
         const key = `${view.secret.windowId}:${slotId}`;
         if (seen.secret.has(key)) continue;
         if (view.secret.own.picks[slotId]) continue;
-        // 两个座位都提交，展示队内冲突裁定
-        const character = bestCharacter(view, slotId, seat, team);
-        if (!character) continue;
-        seen.secret.add(key);
-        try {
-          await sendIntent(ws, {
-            type: 'intent.secret',
-            roundId: view.roundId,
-            windowId: view.secret.windowId,
-            slotId,
-            characterId: character.id,
-          });
-        } catch (error) {
-          console.warn(`[${team}] 秘密候选异常: ${error.message}`);
+        // 取按适配分排序的候选列表，被互斥/约束拒绝时依次回退（裁决权仍在服务端）。
+        const candidates = rankedCandidates(view, slotId, seat, team);
+        for (const character of candidates) {
+          try {
+            const result = await sendIntent(ws, {
+              type: 'intent.secret',
+              roundId: view.roundId,
+              windowId: view.secret.windowId,
+              slotId,
+              characterId: character.id,
+            });
+            if (result.ok) { seen.secret.add(key); break; }
+            console.warn(`[${team}] 候选 ${character.id} 被拒：${result.code}`);
+          } catch (error) {
+            console.warn(`[${team}] 秘密候选异常: ${error.message}`);
+          }
         }
+        if (!seen.secret.has(key)) seen.secret.add(key);
       }
     }
   });

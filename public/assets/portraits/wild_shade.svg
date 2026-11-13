@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240" role="img" aria-label="藤影·希芙">
+  <defs>
+    <linearGradient id="bg-wild_shade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#496818"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="240" fill="url(#bg-wild_shade)"/>
+  <circle cx="22" cy="24" r="8" fill="#a3e635" opacity="0.117"/>
+  <circle cx="65" cy="30" r="12" fill="#a3e635" opacity="0.247"/>
+  <circle cx="161" cy="121" r="31" fill="#a3e635" opacity="0.227"/>
+  <circle cx="36" cy="158" r="33" fill="#a3e635" opacity="0.096"/>
+  <circle cx="106" cy="149" r="17" fill="#a3e635" opacity="0.149"/>
+  <rect x="45" y="27" width="34" height="34" rx="8" transform="rotate(39 45 27)" fill="#ccff42" opacity="0.10"/>
+  <rect x="69" y="196" width="60" height="60" rx="8" transform="rotate(59 69 196)" fill="#ccff42" opacity="0.10"/>
+  <rect x="112" y="-1" width="53" height="53" rx="8" transform="rotate(38 112 -1)" fill="#ccff42" opacity="0.10"/>
+  <circle cx="100" cy="92" r="46" fill="#0a101c" stroke="#a3e635" stroke-width="4"/>
+  <text x="100" y="110" text-anchor="middle" font-size="44" font-weight="700" fill="#a3e635" font-family="sans-serif">斗</text>
+  <text x="100" y="182" text-anchor="middle" font-size="26" font-weight="700" fill="#e8eef8" font-family="sans-serif">希芙</text>
+  <text x="100" y="212" text-anchor="middle" font-size="14" fill="#ccff42" font-family="sans-serif">决斗 · 荒野</text>
+</svg>

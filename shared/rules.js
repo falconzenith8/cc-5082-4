@@ -1,3 +1,5 @@
+import { mutexMap } from './characters.js';
+
 export const SLOT_DEFINITIONS = {
   vanguard: { id: 'vanguard', label: '先锋位', accepts: ['vanguard'] },
   support: { id: 'support', label: '支援位', accepts: ['support'] },
@@ -101,9 +103,16 @@ export function countFactionsFromIds(characterIds, pool) {
   return counts;
 }
 
-function isFeasibleRoster({ rosterIds, slotIds, pool, banned, locked, rules }) {
+function isFeasibleRoster({ rosterIds, slotIds, pool, banned, locked, rules, mutexes }) {
   const used = new Set(rosterIds.filter(Boolean));
   const counts = countFactionsFromIds(rosterIds.filter(Boolean), pool);
+  const forbidden = mutexes ? mutexMap(mutexes) : null;
+  const violatesMutex = (characterId, usedIds) => {
+    if (!forbidden || !forbidden.has(characterId)) return false;
+    const blocked = forbidden.get(characterId);
+    for (const id of usedIds) if (blocked.has(id)) return true;
+    return false;
+  };
   const candidates = [...pool.values()].filter(
     (c) => !banned.has(c.id) && !(locked && locked.has(c.id)) && !used.has(c.id),
   );
@@ -114,6 +123,7 @@ function isFeasibleRoster({ rosterIds, slotIds, pool, banned, locked, rules }) {
     for (const character of sorted) {
       if (usedIds.has(character.id)) continue;
       if (!slotAccepts(slotId, character.role)) continue;
+      if (violatesMutex(character.id, usedIds)) continue;
       const nextCount = (factionCounts[character.faction] || 0) + 1;
       if (nextCount > rules.factionCap) continue;
       if (dfs(rest, new Set(usedIds).add(character.id), { ...factionCounts, [character.faction]: nextCount })) {
@@ -125,11 +135,22 @@ function isFeasibleRoster({ rosterIds, slotIds, pool, banned, locked, rules }) {
   return dfs(slotIds, used, counts);
 }
 
-export function canComplete({ rosterIds, slotIds, pool, banned, locked, rules }) {
+export function canComplete({ rosterIds, slotIds, pool, banned, locked, rules, mutexes = [] }) {
   if (!slotIds.length) {
     return Object.keys(countFactionsFromIds(rosterIds.filter(Boolean), pool)).length >= rules.minFactions;
   }
-  return isFeasibleRoster({ rosterIds, slotIds, pool, banned, locked, rules });
+  return isFeasibleRoster({ rosterIds, slotIds, pool, banned, locked, rules, mutexes });
+}
+
+// 返回与已选角色互斥的角色 id 集合，供引擎/界面禁用候选项。
+export function conflictsWith(rosterIds, mutexes) {
+  const forbidden = mutexMap(mutexes);
+  const out = new Set();
+  for (const id of rosterIds) {
+    const blocked = forbidden.get(id);
+    if (blocked) for (const other of blocked) out.add(other);
+  }
+  return out;
 }
 
 export function defaultBanOrder({ pool, banned, locked }) {
@@ -161,7 +182,7 @@ export function defaultCandidateOrder({ pool, banned, locked, usedIds, slotId, r
   return eligible.map((entry) => entry.character.id);
 }
 
-export function validateFinalRosters({ pool, banned, locked, rules }) {
+export function validateFinalRosters({ pool, banned, locked, rules, mutexes = [] }) {
   const errors = [];
   const rosters = { A: [], B: [] };
   const factions = { A: {}, B: {} };
@@ -202,6 +223,13 @@ export function validateFinalRosters({ pool, banned, locked, rules }) {
     }
     for (const slotId of rules.slotPlan) {
       if (!roster.some((entry) => entry.slotId === slotId)) errors.push({ team, code: 'missing-slot', slotId });
+    }
+    // 同队互斥复核：互斥角色不得同时进入一支队伍的阵容。
+    const teamIds = roster.map((entry) => entry.characterId).filter(Boolean);
+    for (const pair of mutexes) {
+      if (teamIds.includes(pair.a) && teamIds.includes(pair.b)) {
+        errors.push({ team, code: 'mutex-conflict', characterId: pair.a, conflictsWith: pair.b, message: `互斥角色 ${pair.a} 与 ${pair.b} 不能同队` });
+      }
     }
     for (const [faction, count] of Object.entries(factions[team])) {
       if (count > rules.factionCap) {

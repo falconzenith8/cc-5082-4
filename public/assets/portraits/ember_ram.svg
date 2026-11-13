@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240" role="img" aria-label="熔角·卡恩">
+  <defs>
+    <linearGradient id="bg-ember_ram" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#71421b"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="240" fill="url(#bg-ember_ram)"/>
+  <circle cx="80" cy="190" r="13" fill="#fb923c" opacity="0.204"/>
+  <circle cx="123" cy="199" r="30" fill="#fb923c" opacity="0.172"/>
+  <circle cx="101" cy="68" r="17" fill="#fb923c" opacity="0.179"/>
+  <circle cx="79" cy="47" r="27" fill="#fb923c" opacity="0.197"/>
+  <circle cx="121" cy="155" r="18" fill="#fb923c" opacity="0.100"/>
+  <rect x="130" y="80" width="52" height="52" rx="8" transform="rotate(20 130 80)" fill="#ffb74b" opacity="0.10"/>
+  <rect x="-20" y="190" width="54" height="54" rx="8" transform="rotate(45 -20 190)" fill="#ffb74b" opacity="0.10"/>
+  <rect x="-19" y="70" width="32" height="32" rx="8" transform="rotate(8 -19 70)" fill="#ffb74b" opacity="0.10"/>
+  <circle cx="100" cy="92" r="46" fill="#0a101c" stroke="#fb923c" stroke-width="4"/>
+  <text x="100" y="110" text-anchor="middle" font-size="44" font-weight="700" fill="#fb923c" font-family="sans-serif">锋</text>
+  <text x="100" y="182" text-anchor="middle" font-size="26" font-weight="700" fill="#e8eef8" font-family="sans-serif">卡恩</text>
+  <text x="100" y="212" text-anchor="middle" font-size="14" fill="#ffb74b" font-family="sans-serif">先锋 · 焰庭</text>
+</svg>

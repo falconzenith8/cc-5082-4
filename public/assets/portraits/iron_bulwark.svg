@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240" role="img" aria-label="铁壁·阿格尼斯">
+  <defs>
+    <linearGradient id="bg-iron_bulwark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#454c56"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="240" fill="url(#bg-iron_bulwark)"/>
+  <circle cx="29" cy="223" r="23" fill="#9aa8bf" opacity="0.178"/>
+  <circle cx="173" cy="147" r="20" fill="#9aa8bf" opacity="0.160"/>
+  <circle cx="125" cy="43" r="30" fill="#9aa8bf" opacity="0.100"/>
+  <circle cx="47" cy="157" r="23" fill="#9aa8bf" opacity="0.224"/>
+  <circle cx="30" cy="125" r="22" fill="#9aa8bf" opacity="0.158"/>
+  <rect x="29" y="135" width="51" height="51" rx="8" transform="rotate(48 29 135)" fill="#c1d2ef" opacity="0.10"/>
+  <rect x="87" y="131" width="54" height="54" rx="8" transform="rotate(26 87 131)" fill="#c1d2ef" opacity="0.10"/>
+  <rect x="-20" y="32" width="62" height="62" rx="8" transform="rotate(40 -20 32)" fill="#c1d2ef" opacity="0.10"/>
+  <circle cx="100" cy="92" r="46" fill="#0a101c" stroke="#9aa8bf" stroke-width="4"/>
+  <text x="100" y="110" text-anchor="middle" font-size="44" font-weight="700" fill="#9aa8bf" font-family="sans-serif">锋</text>
+  <text x="100" y="182" text-anchor="middle" font-size="26" font-weight="700" fill="#e8eef8" font-family="sans-serif">阿格</text>
+  <text x="100" y="212" text-anchor="middle" font-size="14" fill="#c1d2ef" font-family="sans-serif">先锋 · 铁盟</text>
+</svg>

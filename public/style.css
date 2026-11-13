@@ -238,3 +238,41 @@ p { margin: 0; }
 .link-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
 .link-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: #0e1623; display: grid; gap: 6px; }
 .link-card a { color: var(--blue); font-size: 12px; word-break: break-all; text-decoration: none; }
+
+/* 视图切换器：队内视图 / 公共视图 */
+.view-switch { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #0e1522; }
+.switch-btn {
+  font-size: 11.5px; padding: 4px 12px; border: none; background: transparent; color: var(--muted);
+  cursor: pointer; border-radius: 999px;
+}
+.switch-btn.active { color: #131313; background: var(--amber); font-weight: 600; }
+
+/* 角色头像 */
+.portrait {
+  border-radius: 7px; object-fit: cover; background: #0a101c;
+  border: 1px solid rgba(255,255,255,0.08); display: block;
+}
+.pick-pill .portrait { width: 22px; height: 26px; }
+.pool-item.mutex-off { border-style: dashed; }
+.pool-item.mutex-off .portrait { filter: grayscale(0.8); opacity: 0.5; }
+
+/* 信息公布预览 */
+.preview-panel {
+  border: 1px solid rgba(167,139,250,0.32); border-radius: 12px; padding: 12px;
+  background: linear-gradient(180deg, rgba(20,17,32,0.6), rgba(12,16,26,0.6));
+  display: grid; gap: 10px;
+}
+.preview-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.preview-head h3 { font-size: 13.5px; color: var(--violet); }
+.preview-body { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 780px) { .preview-body { grid-template-columns: 1fr; } }
+.preview-col { border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: #0b1220; display: grid; gap: 7px; align-content: start; }
+.preview-col.team-col { border-left: 3px solid var(--blue); }
+.preview-col.public-col { border-left: 3px solid var(--violet); }
+.preview-col-head { font-size: 12px; font-weight: 600; color: var(--text); }
+.preview-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; }
+.preview-slot { color: var(--muted); font-size: 11px; }
+.preview-opp { font-size: 10.5px; color: var(--muted); line-height: 1.5; }
+.preview-opp:not(.muted) { color: #b6a9f0; }
+.preview-team-group { display: grid; gap: 5px; padding-bottom: 6px; border-bottom: 1px dashed rgba(38,50,72,0.6); }
+.preview-team-group:last-child { border-bottom: none; }

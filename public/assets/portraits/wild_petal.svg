@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240" role="img" aria-label="瓣刃·佩塔">
+  <defs>
+    <linearGradient id="bg-wild_petal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#496818"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="240" fill="url(#bg-wild_petal)"/>
+  <circle cx="152" cy="25" r="10" fill="#a3e635" opacity="0.173"/>
+  <circle cx="166" cy="112" r="32" fill="#a3e635" opacity="0.248"/>
+  <circle cx="64" cy="191" r="24" fill="#a3e635" opacity="0.203"/>
+  <circle cx="119" cy="193" r="22" fill="#a3e635" opacity="0.258"/>
+  <circle cx="17" cy="69" r="26" fill="#a3e635" opacity="0.184"/>
+  <rect x="122" y="181" width="47" height="47" rx="8" transform="rotate(1 122 181)" fill="#ccff42" opacity="0.10"/>
+  <rect x="72" y="167" width="64" height="64" rx="8" transform="rotate(28 72 167)" fill="#ccff42" opacity="0.10"/>
+  <rect x="23" y="78" width="52" height="52" rx="8" transform="rotate(54 23 78)" fill="#ccff42" opacity="0.10"/>
+  <circle cx="100" cy="92" r="46" fill="#0a101c" stroke="#a3e635" stroke-width="4"/>
+  <text x="100" y="110" text-anchor="middle" font-size="44" font-weight="700" fill="#a3e635" font-family="sans-serif">援</text>
+  <text x="100" y="182" text-anchor="middle" font-size="26" font-weight="700" fill="#e8eef8" font-family="sans-serif">佩塔</text>
+  <text x="100" y="212" text-anchor="middle" font-size="14" fill="#ccff42" font-family="sans-serif">支援 · 荒野</text>
+</svg>

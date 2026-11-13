@@ -11,6 +11,7 @@ const state = {
   sceneLoaded: false,
   lastRejection: null,
   sceneBoundScene: null,
+  viewMode: 'team', // team = 队内视图（含本队秘密），public = 公共视图（模拟旁观者所见）
 };
 
 const el = {
@@ -19,6 +20,9 @@ const el = {
   roleBadge: document.getElementById('role-badge'),
   phaseBadge: document.getElementById('phase-badge'),
   clockBadge: document.getElementById('clock-badge'),
+  viewSwitch: document.getElementById('view-switch'),
+  viewTeamBtn: document.getElementById('view-team'),
+  viewPublicBtn: document.getElementById('view-public'),
   phaseSummary: document.getElementById('phase-summary'),
   presenceRow: document.getElementById('presence-row'),
   notice: document.getElementById('notice'),
@@ -29,6 +33,9 @@ const el = {
   turnTrack: document.getElementById('turn-track'),
   teamA: document.getElementById('team-A'),
   teamB: document.getElementById('team-B'),
+  previewPanel: document.getElementById('preview-panel'),
+  previewMode: document.getElementById('preview-mode'),
+  previewBody: document.getElementById('preview-body'),
   revealPanel: document.getElementById('reveal-panel'),
   sceneArea: document.getElementById('scene-area'),
   sceneCanvas: document.getElementById('scene-canvas'),
@@ -98,12 +105,55 @@ function isSeat() {
   return state.view && state.view.you;
 }
 
+// 公共视图模式：座位用户主动切换到「观众所见」，界面隐藏本队秘密，只渲染服务端公共字段。
+function isPublicMode() {
+  return isSeat() && state.viewMode === 'public';
+}
+
 function myTeam() {
   return state.view?.you?.team || null;
 }
 
 function mySeat() {
   return state.view?.you?.seat ?? null;
+}
+
+function mutexPartners(characterId) {
+  const out = new Set();
+  for (const pair of state.view?.mutexes || []) {
+    if (pair.a === characterId) out.add(pair.b);
+    if (pair.b === characterId) out.add(pair.a);
+  }
+  return out;
+}
+
+// 本队已在各阵容位有效的候选角色 id（仅队内视图可用，公共视图返回空集）。
+function ownEffectiveIds() {
+  const team = myTeam();
+  if (!team || isPublicMode()) return new Set();
+  const picks = state.view?.secret?.own?.picks || {};
+  return new Set(Object.values(picks).filter(Boolean).map((p) => p.characterId));
+}
+
+function isMutexBlocked(characterId) {
+  const partners = mutexPartners(characterId);
+  for (const id of ownEffectiveIds()) if (partners.has(id)) return true;
+  return false;
+}
+
+function portraitUrl(character) {
+  return character?.portrait || '';
+}
+
+function makePortrait(character, size = 34) {
+  const img = document.createElement('img');
+  img.className = 'portrait';
+  img.width = size;
+  img.height = Math.round(size * 1.2);
+  img.src = portraitUrl(character);
+  img.alt = character ? character.name : '';
+  img.loading = 'lazy';
+  return img;
 }
 
 async function createAndJoin() {
@@ -169,10 +219,22 @@ async function boot() {
     return;
   }
   el.sceneArea.hidden = true;
+  initViewSwitch();
   connect();
 }
 
 // ---------------- WebSocket ----------------
+
+function initViewSwitch() {
+  el.viewTeamBtn.addEventListener('click', () => {
+    state.viewMode = 'team';
+    render();
+  });
+  el.viewPublicBtn.addEventListener('click', () => {
+    state.viewMode = 'public';
+    render();
+  });
+}
 
 function connect() {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
@@ -247,13 +309,21 @@ function render() {
   el.phaseBadge.textContent = phaseName(view.phase);
   el.phaseBadge.className = `badge phase ${view.phase}`;
   el.title.textContent = view.phase === 'revealed' ? '正式阵容 · 对局已裁决' : '竞技选角台';
-  el.subtitle.textContent = ROUTE.kind === 'spectate' ? '旁观视角：秘密候选不可见' : '座位视角';
+  el.subtitle.textContent = ROUTE.kind === 'spectate'
+    ? '公共视角：秘密候选不可见'
+    : isPublicMode() ? '公共视图（模拟观众所见，隐藏本队秘密）' : '队内视图：可见本队秘密候选';
+
+  // 视图切换器只对座位开放；旁观者本身就只有公共视图。
+  el.viewSwitch.hidden = !isSeat();
+  el.viewTeamBtn.classList.toggle('active', state.viewMode === 'team');
+  el.viewPublicBtn.classList.toggle('active', state.viewMode === 'public');
 
   renderSummary(view);
   renderPresence(view);
   renderPool(view);
   renderTurnTrack(view);
   renderTeams(view);
+  renderPreview(view);
   renderReveal(view);
   updateClock();
   if (view.scene) {
@@ -374,15 +444,13 @@ function renderPool(view) {
   for (const c of chars) {
     const isBanned = banned.has(c.id);
     const lockedTeam = lockedBy.get(c.id);
+    const mutexBlocked = isMutexBlocked(c.id);
     const btn = document.createElement('button');
-    btn.className = `pool-item ${isBanned ? 'gone' : ''} ${state.selected?.characterId === c.id ? 'selected' : ''}`.trim();
-    btn.disabled = isBanned || Boolean(lockedTeam) || view.phase === 'revealed' || view.phase === 'failed';
+    btn.className = `pool-item ${isBanned ? 'gone' : ''} ${state.selected?.characterId === c.id ? 'selected' : ''} ${mutexBlocked ? 'mutex-off' : ''}`.trim();
+    btn.disabled = isBanned || Boolean(lockedTeam) || mutexBlocked || view.phase === 'revealed' || view.phase === 'failed';
     const r = roleMeta(c);
     const f = factionMeta(c);
-    const glyph = document.createElement('span');
-    glyph.className = 'glyph';
-    glyph.style.background = f.color;
-    glyph.textContent = r.short;
+    const portrait = makePortrait(c, 34);
     const meta = document.createElement('span');
     meta.className = 'meta';
     const name = document.createElement('span');
@@ -396,8 +464,9 @@ function renderPool(view) {
     stats.className = 'stats';
     if (lockedTeam) stats.textContent = `${lockedTeam} 已锁`;
     else if (isBanned) stats.textContent = `${bannedBy.get(c.id) || '?'} 禁用`;
+    else if (mutexBlocked) stats.innerHTML = `互斥<br>不可同队`;
     else stats.innerHTML = `力${c.power} 守${c.guard}<br>速${c.speed} 用${c.utility}`;
-    btn.append(glyph, meta, stats);
+    btn.append(portrait, meta, stats);
     if (!btn.disabled) btn.addEventListener('click', () => selectCharacter(c.id));
     list.append(btn);
   }
@@ -523,7 +592,9 @@ function renderTeams(view) {
 
     const slotList = document.createElement('div');
     slotList.className = 'slot-list';
-    const picks = (isMine && view.secret?.own?.picks) || {};
+    // 公共视图模式下，座位用户也看不到任何队伍的秘密候选。
+    const showOwnSecrets = isMine && !isPublicMode();
+    const picks = (showOwnSecrets && view.secret?.own?.picks) || {};
     const finalRoster = view.rosters?.[team];
     for (const slotId of view.rules.slotPlan) {
       const row = document.createElement('div');
@@ -543,7 +614,7 @@ function renderTeams(view) {
       stateLabel.className = 'slot-state';
       if (finalEntry) stateLabel.textContent = finalEntry.source === 'secret' ? '已锁定' : finalEntry.source === 'default' ? '默认补位' : '裁决回退';
       else if (own) stateLabel.textContent = '已提交（截止前可改选）';
-      else if (isMine) stateLabel.textContent = view.phase === 'secret' ? '待提交' : '';
+      else if (isMine) stateLabel.textContent = view.phase === 'secret' ? (isPublicMode() ? '秘密候选（公共视图隐藏）' : '待提交') : '';
       else stateLabel.textContent = view.phase === 'secret' ? '敌方保密中' : '';
       slotHead.append(title, stateLabel);
       row.append(slotHead);
@@ -557,12 +628,12 @@ function renderTeams(view) {
       } else {
         const blank = document.createElement('span');
         blank.className = 'pick-empty';
-        blank.textContent = view.phase === 'secret' && !isMine ? '秘密候选（不可见）' : '未选择';
+        blank.textContent = view.phase === 'secret' && (!isMine || isPublicMode()) ? '秘密候选（不可见）' : '未选择';
         pill.append(blank);
       }
       row.append(pill);
 
-      if (isMine && view.phase === 'secret') {
+      if (isMine && view.phase === 'secret' && !isPublicMode()) {
         const actions = document.createElement('div');
         actions.className = 'slot-actions';
         const chose = state.selected && eligibleSlots(view, state.selected.characterId).some((s) => s.slotId === slotId);
@@ -606,13 +677,10 @@ function pickPill(character, source) {
   const box = document.createElement('span');
   box.className = 'pick-pill';
   if (!character) { box.textContent = '数据缺失'; return box; }
-  const glyph = document.createElement('span');
-  glyph.className = 'glyph';
-  glyph.style.background = factionMeta(character).color;
-  glyph.textContent = roleMeta(character).short;
+  const portrait = makePortrait(character, 22);
   const text = document.createElement('span');
   text.textContent = `${character.name} · ${roleMeta(character).label}`;
-  box.append(glyph, text);
+  box.append(portrait, text);
   if (source) {
     const tag = document.createElement('span');
     tag.className = `tag ${source === 'secret' ? 'secret' : source === 'default' ? 'default' : 'override'}`;
@@ -663,6 +731,117 @@ function suggestForSlot(slotId) {
   state.selected = { characterId: best.id, slotId };
   render();
   toast(`推荐 ${best.name}，可直接提交到 ${slotLabel(slotId)}`, '');
+}
+
+function renderPreview(view) {
+  if (!['secret', 'revealed', 'failed'].includes(view.phase)) {
+    el.previewPanel.hidden = true;
+    return;
+  }
+  el.previewPanel.hidden = false;
+  el.previewMode.textContent = view.phase === 'secret'
+    ? `当前为${isPublicMode() || !isSeat() ? '公共' : '队内'}模式 · 裁决公布前秘密仅本队可见`
+    : '裁决已公布，秘密随正式阵容同步公开';
+  const body = el.previewBody;
+  body.replaceChildren();
+
+  const columns = [];
+  // 队内列：只有座位在队内视图时才有真实秘密数据；否则展示占位说明。
+  const teamCol = document.createElement('div');
+  teamCol.className = 'preview-col team-col';
+  const teamHead = document.createElement('div');
+  teamHead.className = 'preview-col-head';
+  teamHead.textContent = '队内视图（本队秘密候选）';
+  teamCol.append(teamHead);
+  if (isSeat() && !isPublicMode() && view.phase === 'secret' && view.secret?.own) {
+    const team = myTeam();
+    for (const slotId of view.rules.slotPlan) {
+      const pick = view.secret.own.picks[slotId];
+      const row = document.createElement('div');
+      row.className = 'preview-row';
+      const label = document.createElement('span');
+      label.className = 'preview-slot';
+      label.textContent = slotLabel(slotId);
+      const val = document.createElement('span');
+      if (pick) {
+        const c = characterOf(view, pick.characterId);
+        val.append(pickPill(c, 'secret'));
+      } else {
+        val.className = 'pick-empty';
+        val.textContent = '待提交';
+      }
+      row.append(label, val);
+      teamCol.append(row);
+    }
+    const opp = view.secret.opponent;
+    const oppLine = document.createElement('p');
+    oppLine.className = 'preview-opp muted';
+    oppLine.textContent = `对手仅可见本队提交进度 ${opp ? '' : ''}${view.secret.status[team].slotsSubmitted}/${view.secret.status[team].totalSlots}，看不到角色`;
+    teamCol.append(oppLine);
+  } else {
+    const lock = document.createElement('p');
+    lock.className = 'pick-empty';
+    lock.textContent = isSeat()
+      ? '公共视图模式下此处不显示秘密候选（切换回队内视图可查看本队数据）'
+      : '旁观者无座位，服务端不下发任何队伍的秘密候选';
+    teamCol.append(lock);
+  }
+  columns.push(teamCol);
+
+  // 公共列：直接渲染服务端公共字段——secret 下只有提交数量，revealed 后才有正式阵容。
+  const pubCol = document.createElement('div');
+  pubCol.className = 'preview-col public-col';
+  const pubHead = document.createElement('div');
+  pubHead.className = 'preview-col-head';
+  pubHead.textContent = '公共视图（观众 / 对手可见）';
+  pubCol.append(pubHead);
+  if (view.phase === 'secret') {
+    for (const team of ['A', 'B']) {
+      const row = document.createElement('div');
+      row.className = 'preview-row';
+      const label = document.createElement('span');
+      label.className = 'preview-slot';
+      label.textContent = view.teams[team].name;
+      const val = document.createElement('span');
+      val.className = 'pick-empty';
+      const st = view.secret.status[team];
+      val.textContent = `已提交 ${st.slotsSubmitted}/${st.totalSlots} 个位置 · 角色保密`;
+      row.append(label, val);
+      pubCol.append(row);
+    }
+    const guarantee = document.createElement('p');
+    guarantee.className = 'preview-opp';
+    guarantee.textContent = '公共载荷不含 secret.own / secret.opponent 候选字段';
+    pubCol.append(guarantee);
+  } else if (view.phase === 'revealed') {
+    for (const team of ['A', 'B']) {
+      const group = document.createElement('div');
+      group.className = 'preview-team-group';
+      const title = document.createElement('span');
+      title.className = 'preview-slot';
+      title.textContent = view.teams[team].name;
+      group.append(title);
+      for (const entry of view.rosters[team]) {
+        const row = document.createElement('div');
+        row.className = 'preview-row';
+        const label = document.createElement('span');
+        label.className = 'preview-slot';
+        label.textContent = entry.slotLabel;
+        const val = document.createElement('span');
+        val.append(pickPill(entry.character, entry.source));
+        row.append(label, val);
+        group.append(row);
+      }
+      pubCol.append(group);
+    }
+  } else {
+    const fail = document.createElement('p');
+    fail.className = 'pick-empty';
+    fail.textContent = `裁决失败（${view.failure?.code || 'unknown'}），公共通道无阵容可公布`;
+    pubCol.append(fail);
+  }
+  columns.push(pubCol);
+  body.append(...columns);
 }
 
 function renderReveal(view) {

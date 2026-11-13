@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { MatchRoom } from '../server/engine.js';
-import { CHARACTER_POOL } from '../shared/characters.js';
+import { CHARACTER_POOL, MUTEXES } from '../shared/characters.js';
 import { DEFAULT_RULES } from '../shared/rules.js';
 import { validateScene } from '../public/js/scene-loader.js';
 
@@ -12,6 +12,13 @@ const baseRules = {
   slotPlan: ['vanguard', 'support', 'flex'],
   timers: { banMs: 1000, secretMs: 1000, awayGraceMs: 500 },
 };
+
+// 从生成池中按定位取角色，并避开与已选角色存在互斥关系的 id。
+function byRole(role, exclude = []) {
+  const blocked = new Set(exclude.flatMap((id) =>
+    MUTEXES.filter((p) => p.a === id || p.b === id).map((p) => (p.a === id ? p.b : p.a))));
+  return CHARACTER_POOL.find((c) => c.role === role && !blocked.has(c.id) && !exclude.includes(c));
+}
 
 function makeRoom(rules = baseRules, clockStart = 1000) {
   const clockRef = { t: clockStart };
@@ -63,31 +70,37 @@ test('候选耗尽：支援位候选被禁光后裁决失败且不生成锁', ()
 
 test('队内冲突：截止前改选由最新意图胜出，且另一座位可覆盖旧意图', () => {
   const { room, clockRef } = makeRoom();
+  const vanguards = CHARACTER_POOL.filter((c) => c.role === 'vanguard');
+  const firstPick = vanguards[0].id;
+  const secondPick = vanguards[1].id;
+  const revisePick = vanguards.find((c) => !MUTEXES.some((p) =>
+    (p.a === c.id && (p.b === firstPick || p.b === secondPick))
+    || (p.b === c.id && (p.a === firstPick || p.a === secondPick)))).id;
   clockRef.t += 1;
   const first = submit(room, clockRef, {
     team: 'A', seatIndex: 0, intentId: 'i1', roundId: 1, windowId: room.state.secret.windowId,
-    slotId: 'vanguard', characterId: 'iron_bulwark',
+    slotId: 'vanguard', characterId: firstPick,
   });
   assert.equal(first.ok, true);
 
   clockRef.t += 1;
   const conflict = submit(room, clockRef, {
     team: 'A', seatIndex: 1, intentId: 'i2', roundId: 1, windowId: room.state.secret.windowId,
-    slotId: 'vanguard', characterId: 'tide_bastion',
+    slotId: 'vanguard', characterId: secondPick,
   });
   assert.equal(conflict.ok, true, '不同座位同位置不同角色应被接受但记录冲突');
 
   const effectives = room.teamEffectives('A');
-  assert.equal(effectives.vanguard.characterId, 'tide_bastion', '较晚提交者胜出');
+  assert.equal(effectives.vanguard.characterId, secondPick, '较晚提交者胜出');
   assert.equal(room.state.secret.teams.A.conflicts.length, 1);
 
   clockRef.t += 1;
   const revise = submit(room, clockRef, {
     team: 'A', seatIndex: 0, intentId: 'i3', roundId: 1, windowId: room.state.secret.windowId,
-    slotId: 'vanguard', characterId: 'ember_ram',
+    slotId: 'vanguard', characterId: revisePick,
   });
   assert.equal(revise.ok, true, '截止前的改选应被接受');
-  assert.equal(room.teamEffectives('A').vanguard.characterId, 'ember_ram');
+  assert.equal(room.teamEffectives('A').vanguard.characterId, revisePick);
   assert.equal(revise.revision, true);
 });
 
@@ -233,24 +246,25 @@ test('玩家暂离：暂离座位提交被拒，双方全离线超过宽限后�
 
 test('秘密视图隔离：旁观者与敌方视图都不包含对方候选', () => {
   const { room, clockRef } = makeRoom();
+  const secretId = CHARACTER_POOL.find((c) => c.role === 'vanguard').id;
   clockRef.t += 1;
   submit(room, clockRef, {
     team: 'A', seatIndex: 0, intentId: 'p1', roundId: 1, windowId: room.state.secret.windowId,
-    slotId: 'vanguard', characterId: 'iron_bulwark',
+    slotId: 'vanguard', characterId: secretId,
   });
   const publicView = room.publicView(clockRef.t);
   assert.equal(publicView.secret.own, undefined);
   assert.equal(publicView.secret.opponent, undefined);
-  const serialized = JSON.stringify(publicView);
-  assert.ok(!serialized.includes('iron_bulwark'), '旁观视图不得包含已提交候选角色');
+  // 只检查秘密字段本身：角色 id 出现在公开的角色池/互斥元数据里不算泄漏隐藏候选。
+  const secretPayload = JSON.stringify(publicView.secret);
+  assert.ok(!secretPayload.includes(secretId), '旁观视图的秘密字段不得包含已提交候选角色');
 
   const bView = room.teamView('B', 0, clockRef.t);
-  const bSerialized = JSON.stringify(bView);
-  assert.ok(!bSerialized.includes('iron_bulwark'), 'B 队视图不得包含 A 队的秘密候选');
+  assert.ok(!JSON.stringify(bView.secret).includes(secretId), 'B 队视图的秘密字段不得包含 A 队候选');
   assert.equal(bView.secret.opponent.slotsSubmitted, 1);
 
   const aView = room.teamView('A', 0, clockRef.t);
-  assert.equal(aView.secret.own.picks.vanguard.characterId, 'iron_bulwark');
+  assert.equal(aView.secret.own.picks.vanguard.characterId, secretId);
 });
 
 test('全局唯一锁：两队都想争抢同一角色时，只有一队得到，另一队回退且约束仍成立', () => {

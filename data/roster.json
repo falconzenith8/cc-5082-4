@@ -1,0 +1,365 @@
+{
+  "schema": "arena-roster@2",
+  "seed": "arena-draft-2026",
+  "generatedAt": "deterministic",
+  "roles": {
+    "vanguard": {
+      "id": "vanguard",
+      "name": "先锋",
+      "short": "锋",
+      "color": "#f3a712",
+      "required": true
+    },
+    "support": {
+      "id": "support",
+      "name": "支援",
+      "short": "援",
+      "color": "#3ddc97",
+      "required": true
+    },
+    "duelist": {
+      "id": "duelist",
+      "name": "决斗",
+      "short": "斗",
+      "color": "#ff6b8a",
+      "required": false
+    },
+    "control": {
+      "id": "control",
+      "name": "控制",
+      "short": "控",
+      "color": "#a78bfa",
+      "required": false
+    }
+  },
+  "factions": {
+    "iron": {
+      "id": "iron",
+      "name": "铁盟",
+      "color": "#9aa8bf"
+    },
+    "tide": {
+      "id": "tide",
+      "name": "潮汐",
+      "color": "#38bdf8"
+    },
+    "ember": {
+      "id": "ember",
+      "name": "焰庭",
+      "color": "#fb923c"
+    },
+    "wild": {
+      "id": "wild",
+      "name": "荒野",
+      "color": "#a3e635"
+    }
+  },
+  "characters": [
+    {
+      "id": "iron_bulwark",
+      "name": "铁壁·阿格尼斯",
+      "role": "vanguard",
+      "faction": "iron",
+      "power": 74,
+      "guard": 92,
+      "speed": 46,
+      "utility": 58,
+      "portrait": "/assets/portraits/iron_bulwark.svg"
+    },
+    {
+      "id": "iron_edge",
+      "name": "锋刃·艾吉",
+      "role": "duelist",
+      "faction": "iron",
+      "power": 86,
+      "guard": 58,
+      "speed": 76,
+      "utility": 44,
+      "portrait": "/assets/portraits/iron_edge.svg"
+    },
+    {
+      "id": "iron_forge",
+      "name": "锻炉·瓦特",
+      "role": "support",
+      "faction": "iron",
+      "power": 58,
+      "guard": 64,
+      "speed": 52,
+      "utility": 88,
+      "portrait": "/assets/portraits/iron_forge.svg"
+    },
+    {
+      "id": "iron_warden",
+      "name": "戒律·沃登",
+      "role": "control",
+      "faction": "iron",
+      "power": 66,
+      "guard": 70,
+      "speed": 58,
+      "utility": 84,
+      "portrait": "/assets/portraits/iron_warden.svg"
+    },
+    {
+      "id": "tide_bastion",
+      "name": "潮障·娜瑞尔",
+      "role": "vanguard",
+      "faction": "tide",
+      "power": 70,
+      "guard": 86,
+      "speed": 54,
+      "utility": 66,
+      "portrait": "/assets/portraits/tide_bastion.svg"
+    },
+    {
+      "id": "tide_fang",
+      "name": "浪牙·赛壬",
+      "role": "duelist",
+      "faction": "tide",
+      "power": 82,
+      "guard": 54,
+      "speed": 88,
+      "utility": 50,
+      "portrait": "/assets/portraits/tide_fang.svg"
+    },
+    {
+      "id": "tide_choir",
+      "name": "潮歌·露米",
+      "role": "support",
+      "faction": "tide",
+      "power": 54,
+      "guard": 60,
+      "speed": 68,
+      "utility": 90,
+      "portrait": "/assets/portraits/tide_choir.svg"
+    },
+    {
+      "id": "tide_mist",
+      "name": "雾潮·维恩",
+      "role": "control",
+      "faction": "tide",
+      "power": 64,
+      "guard": 62,
+      "speed": 72,
+      "utility": 86,
+      "portrait": "/assets/portraits/tide_mist.svg"
+    },
+    {
+      "id": "ember_ram",
+      "name": "熔角·卡恩",
+      "role": "vanguard",
+      "faction": "ember",
+      "power": 78,
+      "guard": 88,
+      "speed": 50,
+      "utility": 55,
+      "portrait": "/assets/portraits/ember_ram.svg"
+    },
+    {
+      "id": "ember_step",
+      "name": "焰足·希拉",
+      "role": "duelist",
+      "faction": "ember",
+      "power": 88,
+      "guard": 52,
+      "speed": 84,
+      "utility": 40,
+      "portrait": "/assets/portraits/ember_step.svg"
+    },
+    {
+      "id": "ember_hearth",
+      "name": "炉心·奥菲",
+      "role": "support",
+      "faction": "ember",
+      "power": 60,
+      "guard": 58,
+      "speed": 56,
+      "utility": 92,
+      "portrait": "/assets/portraits/ember_hearth.svg"
+    },
+    {
+      "id": "ember_cinder",
+      "name": "烬涡·格雷",
+      "role": "control",
+      "faction": "ember",
+      "power": 68,
+      "guard": 64,
+      "speed": 60,
+      "utility": 82,
+      "portrait": "/assets/portraits/ember_cinder.svg"
+    },
+    {
+      "id": "wild_root",
+      "name": "根守·布鲁",
+      "role": "vanguard",
+      "faction": "wild",
+      "power": 72,
+      "guard": 90,
+      "speed": 58,
+      "utility": 62,
+      "portrait": "/assets/portraits/wild_root.svg"
+    },
+    {
+      "id": "wild_shade",
+      "name": "藤影·希芙",
+      "role": "duelist",
+      "faction": "wild",
+      "power": 84,
+      "guard": 56,
+      "speed": 82,
+      "utility": 48,
+      "portrait": "/assets/portraits/wild_shade.svg"
+    },
+    {
+      "id": "wild_bloom",
+      "name": "花语·梅芙",
+      "role": "support",
+      "faction": "wild",
+      "power": 56,
+      "guard": 62,
+      "speed": 64,
+      "utility": 94,
+      "portrait": "/assets/portraits/wild_bloom.svg"
+    },
+    {
+      "id": "wild_gale",
+      "name": "风笞·索恩",
+      "role": "control",
+      "faction": "wild",
+      "power": 62,
+      "guard": 60,
+      "speed": 78,
+      "utility": 88,
+      "portrait": "/assets/portraits/wild_gale.svg"
+    },
+    {
+      "id": "iron_aegis",
+      "name": "盾誓·伊欧娜",
+      "role": "vanguard",
+      "faction": "iron",
+      "power": 68,
+      "guard": 82,
+      "speed": 49,
+      "utility": 68,
+      "portrait": "/assets/portraits/iron_aegis.svg"
+    },
+    {
+      "id": "iron_quill",
+      "name": "墨律·奎尔",
+      "role": "control",
+      "faction": "iron",
+      "power": 72,
+      "guard": 68,
+      "speed": 66,
+      "utility": 82,
+      "portrait": "/assets/portraits/iron_quill.svg"
+    },
+    {
+      "id": "tide_kelp",
+      "name": "藻铠·凯尔",
+      "role": "duelist",
+      "faction": "tide",
+      "power": 82,
+      "guard": 59,
+      "speed": 75,
+      "utility": 51,
+      "portrait": "/assets/portraits/tide_kelp.svg"
+    },
+    {
+      "id": "tide_anchor",
+      "name": "锚心·安珂",
+      "role": "vanguard",
+      "faction": "tide",
+      "power": 74,
+      "guard": 90,
+      "speed": 62,
+      "utility": 61,
+      "portrait": "/assets/portraits/tide_anchor.svg"
+    },
+    {
+      "id": "ember_flare",
+      "name": "灼言·芙蕾",
+      "role": "support",
+      "faction": "ember",
+      "power": 64,
+      "guard": 56,
+      "speed": 50,
+      "utility": 86,
+      "portrait": "/assets/portraits/ember_flare.svg"
+    },
+    {
+      "id": "ember_coil",
+      "name": "焰环·科尔",
+      "role": "duelist",
+      "faction": "ember",
+      "power": 80,
+      "guard": 58,
+      "speed": 90,
+      "utility": 54,
+      "portrait": "/assets/portraits/ember_coil.svg"
+    },
+    {
+      "id": "wild_moss",
+      "name": "苔盾·摩斯",
+      "role": "control",
+      "faction": "wild",
+      "power": 66,
+      "guard": 58,
+      "speed": 67,
+      "utility": 84,
+      "portrait": "/assets/portraits/wild_moss.svg"
+    },
+    {
+      "id": "wild_petal",
+      "name": "瓣刃·佩塔",
+      "role": "support",
+      "faction": "wild",
+      "power": 64,
+      "guard": 61,
+      "speed": 50,
+      "utility": 85,
+      "portrait": "/assets/portraits/wild_petal.svg"
+    }
+  ],
+  "mutexes": [
+    {
+      "a": "tide_bastion",
+      "b": "ember_ram",
+      "reason": "剧情对立：同队登场将触发机制冲突"
+    },
+    {
+      "a": "iron_warden",
+      "b": "ember_coil",
+      "reason": "剧情对立：同队登场将触发机制冲突"
+    },
+    {
+      "a": "tide_anchor",
+      "b": "wild_moss",
+      "reason": "剧情对立：同队登场将触发机制冲突"
+    },
+    {
+      "a": "ember_hearth",
+      "b": "iron_bulwark",
+      "reason": "剧情对立：同队登场将触发机制冲突"
+    },
+    {
+      "a": "ember_step",
+      "b": "iron_forge",
+      "reason": "剧情对立：同队登场将触发机制冲突"
+    },
+    {
+      "a": "wild_bloom",
+      "b": "tide_bastion",
+      "reason": "剧情对立：同队登场将触发机制冲突"
+    },
+    {
+      "a": "iron_aegis",
+      "b": "ember_hearth",
+      "reason": "剧情对立：同队登场将触发机制冲突"
+    },
+    {
+      "a": "wild_gale",
+      "b": "iron_edge",
+      "reason": "剧情对立：同队登场将触发机制冲突"
+    }
+  ]
+}

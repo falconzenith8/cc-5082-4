@@ -17,6 +17,10 @@
         </div>
       </div>
       <div class="topbar-right">
+        <div id="view-switch" class="view-switch" hidden>
+          <button id="view-team" class="switch-btn active" type="button">队内视图</button>
+          <button id="view-public" class="switch-btn" type="button">公共视图</button>
+        </div>
         <span id="role-badge" class="badge">旁观席</span>
         <span id="phase-badge" class="badge phase">—</span>
         <span id="clock-badge" class="badge mono">--:--</span>
@@ -46,6 +50,15 @@
           <div class="team-columns">
             <article id="team-A" class="team-card" data-team="A"></article>
             <article id="team-B" class="team-card" data-team="B"></article>
+          </div>
+
+          <div id="preview-panel" class="preview-panel" hidden>
+            <div class="preview-head">
+              <h3>信息公布预览</h3>
+              <span id="preview-mode" class="muted"></span>
+            </div>
+            <div id="preview-body" class="preview-body"></div>
+            <p class="preview-note muted">预览内容全部来自服务端下发的视图快照；公共视图不包含任何队伍的秘密候选字段。</p>
           </div>
 
           <div id="reveal-panel" class="reveal-panel" hidden></div>

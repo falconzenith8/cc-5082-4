@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import WebSocket from 'ws';
 import { createApp } from '../server/index.js';
+import { CHARACTER_POOL } from '../shared/characters.js';
 
 function waitOpen(ws) {
   return new Promise((resolve, reject) => {
@@ -204,6 +205,91 @@ test('WebSocket：座位断开触发暂离；双方断开后服务端按时裁�
     room.tick(room.state.allAwaySince + 1200 + 10);
     assert.equal(room.state.phase, 'revealed');
     assert.equal(room.state.reveal.reason, 'both-teams-away');
+  } finally {
+    await app.close();
+  }
+});
+
+test('越权反例：伪造令牌降级为旁观者，公共通道不含任何秘密候选', async () => {
+  const { app, base, wsBase } = await startServer();
+  let seatA;
+  let forgedWs;
+  let specWs;
+  try {
+    const created = await fetch(`${base}/api/matches`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ rules: { banTurnsPerTeam: 0, timers: { banMs: 2000, secretMs: 8000, awayGraceMs: 1000 } } }),
+    }).then((r) => r.json());
+    const matchId = created.matchId;
+    seatA = await seatSocket(wsBase, matchId, created.tokens.A[0]);
+
+    // A 队提交一个先锋秘密候选（公共 HTTP 视图不含 pool，从共享角色池取 id）
+    const vanguardId = CHARACTER_POOL.find((c) => c.role === 'vanguard').id;
+    // seatSocket 已返回首条视图（banTurnsPerTeam=0 时直接是 secret 阶段）
+    const secretView = seatA.view.phase === 'secret'
+      ? seatA.view
+      : (await seatA.mailbox.next((m) => m.type === 'view' && m.view.phase === 'secret')).view;
+    seatA.ws.send(JSON.stringify({
+      type: 'intent.secret', intentId: 'peek-secret', roundId: secretView.roundId,
+      windowId: secretView.secret.windowId, slotId: 'vanguard', characterId: vanguardId,
+    }));
+    await seatA.mailbox.next((m) => m.type === 'intent.result' && m.intentId === 'peek-secret');
+
+    // 伪造令牌：必须被降级为旁观者
+    forgedWs = new WebSocket(`${wsBase}/ws`);
+    await waitOpen(forgedWs);
+    const forgedBox = createMailbox(forgedWs);
+    forgedWs.send(JSON.stringify({ type: 'hello', matchId, token: 'totally-forged' }));
+    const hello = await forgedBox.next((m) => m.type === 'hello.ok');
+    assert.equal(hello.role.kind, 'spectator');
+    const forgedView = await forgedBox.next((m) => m.type === 'view');
+    assert.equal(forgedView.view.secret.own, undefined);
+    assert.ok(!JSON.stringify(forgedView.view.secret).includes(vanguardId), '伪造连接的秘密字段不含候选 id');
+
+    // 无令牌旁观者
+    specWs = new WebSocket(`${wsBase}/ws`);
+    await waitOpen(specWs);
+    const specBox = createMailbox(specWs);
+    specWs.send(JSON.stringify({ type: 'hello', matchId }));
+    await specBox.next((m) => m.type === 'hello.ok');
+    const specView = await specBox.next((m) => m.type === 'view');
+    assert.equal(specView.view.secret.own, undefined);
+    assert.ok(!JSON.stringify(specView.view.secret).includes(vanguardId));
+
+    // 旁观者尝试提交意图被拒
+    specWs.send(JSON.stringify({
+      type: 'intent.secret', intentId: 'spec-cheat', roundId: 1,
+      windowId: secretView.secret.windowId, slotId: 'vanguard', characterId: vanguardId,
+    }));
+    const rejected = await specBox.next((m) => m.type === 'rejected');
+    assert.equal(rejected.code, 'not-a-seat');
+
+    // HTTP 公共接口同样无秘密字段
+    const httpView = await fetch(`${base}/api/matches/${matchId}`).then((r) => r.json());
+    assert.equal(httpView.secret.own, undefined);
+    assert.ok(!JSON.stringify(httpView.secret).includes(vanguardId));
+  } finally {
+    forgedWs?.close();
+    specWs?.close();
+    seatA?.ws?.close();
+    await app.close();
+  }
+});
+
+test('互斥元数据随公共视图下发，且不暴露任何秘密候选字段', async () => {
+  const { app, base } = await startServer();
+  try {
+    const created = await fetch(`${base}/api/matches`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ rules: { banTurnsPerTeam: 0 } }),
+    }).then((r) => r.json());
+    const view = await fetch(`${base}/api/matches/${created.matchId}`).then((r) => r.json());
+    assert.ok(Array.isArray(view.mutexes) && view.mutexes.length > 0, '互斥关系是公开元数据');
+    for (const pair of view.mutexes) {
+      assert.ok(pair.a && pair.b);
+      assert.equal(pair.reason, undefined, '视图只下发互斥 id 对，原因等冗余字段不下发');
+    }
+    assert.equal(view.secret.own, undefined);
   } finally {
     await app.close();
   }

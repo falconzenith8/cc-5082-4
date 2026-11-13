@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240" role="img" aria-label="苔盾·摩斯">
+  <defs>
+    <linearGradient id="bg-wild_moss" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#496818"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="240" fill="url(#bg-wild_moss)"/>
+  <circle cx="153" cy="39" r="10" fill="#a3e635" opacity="0.106"/>
+  <circle cx="49" cy="49" r="26" fill="#a3e635" opacity="0.096"/>
+  <circle cx="122" cy="141" r="27" fill="#a3e635" opacity="0.116"/>
+  <circle cx="39" cy="108" r="10" fill="#a3e635" opacity="0.164"/>
+  <circle cx="130" cy="59" r="9" fill="#a3e635" opacity="0.090"/>
+  <rect x="123" y="19" width="41" height="41" rx="8" transform="rotate(2 123 19)" fill="#ccff42" opacity="0.10"/>
+  <rect x="8" y="49" width="44" height="44" rx="8" transform="rotate(18 8 49)" fill="#ccff42" opacity="0.10"/>
+  <rect x="107" y="166" width="30" height="30" rx="8" transform="rotate(15 107 166)" fill="#ccff42" opacity="0.10"/>
+  <circle cx="100" cy="92" r="46" fill="#0a101c" stroke="#a3e635" stroke-width="4"/>
+  <text x="100" y="110" text-anchor="middle" font-size="44" font-weight="700" fill="#a3e635" font-family="sans-serif">控</text>
+  <text x="100" y="182" text-anchor="middle" font-size="26" font-weight="700" fill="#e8eef8" font-family="sans-serif">摩斯</text>
+  <text x="100" y="212" text-anchor="middle" font-size="14" fill="#ccff42" font-family="sans-serif">控制 · 荒野</text>
+</svg>
